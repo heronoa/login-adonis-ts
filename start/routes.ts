@@ -31,4 +31,4 @@ Route.get("/confirm", "AuthController.confirm");
 Route.get("/resend", "AuthController.resendConfirmation").middleware("auth");
 Route.get("/me", "AuthController.me").middleware("auth");
 Route.get("/private", "AuthController.private").middleware("auth")
-Route.get("/delete", "AuthController.deleteUser").middleware("auth")
+Route.delete("/delete", "AuthController.deleteUser").middleware("auth")
