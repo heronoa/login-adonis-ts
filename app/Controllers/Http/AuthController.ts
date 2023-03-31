@@ -2,11 +2,17 @@ import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import User from 'App/Models/User';
 import Mail from '@ioc:Adonis/Addons/Mail';
 export default class AuthController {
-    public async login({ request, auth }: HttpContextContract) {
-        const { email, password } = request.all();
-        const token = await auth.attempt(email, password, {
+    public async login({ request, response, auth }: HttpContextContract) {
+        const { email, password, rememberMe } = request.all();
+        const token = await auth.attempt(email, password, rememberMe, {
             expiresIn: "365 days",
         })
+
+        response.cookie('access_token', token, {
+            httpOnly: true,
+            secure: true
+          });
+
         return token;
     }
 
