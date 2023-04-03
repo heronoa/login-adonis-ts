@@ -41,12 +41,15 @@ export default class AuthController {
     }
 
     public async signin({ request }: HttpContextContract) {
-        const { email, password } = request.all();
+        const { name, email, password, wallet, image, } = request.all();
         const existingUser = await User.findBy("email", email)
         if (!existingUser?.id) {
             const newUser = {
+                name,
                 email: email,
-                password: password
+                password: password,
+                wallet,
+                image,
             }
             const savedUser = await User.create(newUser);
             const mailResult = await Mail.send((message) => {
@@ -55,7 +58,7 @@ export default class AuthController {
                     .to(savedUser.email)
                     .subject('Welcome Onboard!')
                     .htmlView("emails/welcome")
-                    .html(`<h1>Welcome a board ${savedUser.email}<h1><br/><h4><a href="http://127.0.0.1:3333/confirm?token=${savedUser.confirmation_token}">Click here to confirm your email account</a></h4>`)
+                    .html(`<h1>Welcome a board ${savedUser.name}<h1><br/><h4><a href="http://127.0.0.1:3333/confirm?token=${savedUser.confirmation_token}">Click here to confirm your email account</a></h4>`)
             })
             return mailResult;
         } else {
